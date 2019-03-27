@@ -1,0 +1,51 @@
+clear
+load dataarytmiasrdca
+
+datainnet=NDATA';
+dataoutnet=parseClassify(typ_ochorenia);
+
+%  vytvorenie struktury siete
+pocet_neuronov=20;  % definujte pocet neuronov v skrytej vstve
+net = patternnet(pocet_neuronov);
+
+skupina1 = (1:90);
+skupina2 = 
+
+% net.divideFcn='dividerand';
+% net.divideParam.trainRatio=0.6;
+% net.divideParam.valRatio=0.2;
+% net.divideParam.testRatio=0.2;
+
+net.divideFcn = 'divideind';
+% Indexove rozdelenie skupin 1,3,5; 4; 2;
+% net.divideParam.trainInd = [1:90, 167:256, 333:442];
+% net.divideParam.valInd = (256:332); 
+% net.divideParam.testInd = (91:166);
+
+% Indexove rozdelenie skupin 1,3,5; 4; 2;
+net.divideParam.trainInd = [1:90, 91:166, 167:256];
+net.divideParam.valInd = (256:332); 
+net.divideParam.testInd = ();
+% nastavenie parametrov trenovania
+% definujte parametre trenovania siete
+net.trainParam.goal = 1e-20;       % ukoncovacia podmienka na chybu.
+net.trainParam.show = 10;           % frekvencia zobrazovania chyby
+net.trainParam.epochs = 250;        % maximalny pocet trenovacich epoch.
+net.trainParam.max_fail = 250;
+net.trainParam.min_grad = 1e-20;
+
+% trenovanie neuronovej siete
+for i=1:5
+net = train(net,datainnet,dataoutnet);
+end
+
+% simulacia vystupu NS pre trenovacie data
+% testovanie NS
+outnetsim = sim(net,datainnet);
+
+% chyba NS a dat
+err=(outnetsim-dataoutnet);
+
+% plot confusion
+y=net(datainnet);
+plotconfusion(dataoutnet, y);

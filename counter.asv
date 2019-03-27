@@ -1,0 +1,7 @@
+function [count] = counter(data)
+    
+    [rows, clmns] = size
+    for 
+    
+end
+
